@@ -27,35 +27,38 @@
 
 ## Архитектура проекта
 
-**Стек:**
+**Стратегия:** два варианта для сравнения → выбрать лучший.
+
+### Версия 1 — HTML/CSS (активная разработка)
+- **Фронтенд:** HTML + CSS + Vanilla JS
+- **Бот:** Python (aiogram) или Node.js (Telegraf) — по ходу курса
+- **Деплой:** Vercel (папка `app-html/`)
+- **Когда перейти к v2:** когда HTML/CSS упрётся в ограничения
+
+### Версия 2 — React/TS (отложено)
 - **Фронтенд:** React + TypeScript + Vite
 - **Стили:** Tailwind CSS
 - **TMA SDK:** `@telegram-apps/sdk`
-- **Роутинг:** React Router (SPA, BackButton управляет стеком)
-- **Бэкенд:** Node.js + Express
-- **БД:** PostgreSQL
-- **Бот:** Grammy или Telegraf
+- **Бэкенд:** Node.js + Express + PostgreSQL
 - **Деплой:** Vercel (фронт) + Railway (бэкенд + бот)
 
-**Структура папок (планируемая):**
+**Структура папок:**
 ```
 tg-beaty-catalog/
-├── frontend/
-│   ├── src/
-│   │   ├── screens/        # Экраны: Catalog, ServiceDetail, Booking, etc.
-│   │   ├── components/     # UI-компоненты: ServiceCard, SlotPicker, etc.
-│   │   ├── hooks/          # useTelegram, useBooking, etc.
-│   │   ├── api/            # Запросы к бэкенду
-│   │   └── App.tsx
-│   └── index.html
-├── backend/
-│   ├── src/
-│   │   ├── routes/         # API эндпоинты
-│   │   ├── models/         # БД-модели
-│   │   └── bot/            # Telegram бот
-│   └── index.ts
-└── docs/                   # research.md, project.md, brief.md, PLAN.md
+├── app-html/               # Версия 1 — HTML/CSS (курс)
+│   ├── index.html
+│   ├── css/
+│   ├── js/
+│   └── .env                # Токен бота (не в GitHub!)
+├── app-react/              # Версия 2 — React/TS (будущее)
+│   └── ...
+└── docs/                   # research.md, brief.md, PLAN.md, CLAUDE.md
 ```
+
+**Секреты и безопасность:**
+- Токен бота хранится в `.env` файле
+- `.env` всегда в `.gitignore` — никогда не пушить на GitHub
+- `.env.example` — шаблон с пустыми значениями (можно пушить)
 
 ---
 
