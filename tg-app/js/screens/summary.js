@@ -7,13 +7,6 @@ const SummaryScreen = {
     const { service, date, time, user, phone } = App.booking;
     if (!service || !date || !time) return '<div class="screen"></div>';
 
-    const phoneRow = phone
-      ? `<div class="client-row">
-           <span class="client-row-label">Телефон</span>
-           <span>${phone}</span>
-         </div>`
-      : '';
-
     return `
       <div class="screen pb-main-btn">
         <div class="summary-screen">
@@ -46,16 +39,24 @@ const SummaryScreen = {
 
           <div class="client-section">
             <div class="client-label">Ваши данные</div>
-            <div class="client-row">
-              <span class="client-row-label">Имя</span>
-              <span>${user?.first_name || 'Не указано'}</span>
+
+            <div class="form-group" style="margin-bottom:10px">
+              <label class="form-label">Имя</label>
+              <input class="form-input" id="client-name" type="text"
+                     value="${user?.first_name || ''}"
+                     placeholder="Ваше имя">
             </div>
-            ${phoneRow}
-            ${!phone ? `
-              <button class="btn-add-phone" onclick="SummaryScreen.addPhone()">
-                + Добавить телефон
-              </button>
-            ` : ''}
+
+            <div class="form-group" style="margin-bottom:10px">
+              <label class="form-label">Телефон</label>
+              <input class="form-input" id="client-phone" type="tel"
+                     value="${phone || ''}"
+                     placeholder="+7 (999) 000-00-00">
+            </div>
+
+            <button class="btn-add-phone" onclick="SummaryScreen.fillFromTelegram()">
+              📲 Использовать номер из Telegram
+            </button>
           </div>
         </div>
       </div>
@@ -66,23 +67,34 @@ const SummaryScreen = {
     TelegramAPI.showMainButton('Подтвердить запись', () => this.confirm());
   },
 
-  addPhone() {
+  fillFromTelegram() {
     TelegramAPI.hapticLight();
     TelegramAPI.requestContact(contact => {
+      const phoneInput = document.getElementById('client-phone');
+      if (phoneInput) phoneInput.value = contact.phone_number;
       App.booking.phone = contact.phone_number;
-      Router.replace('summary', null);
     });
   },
 
   confirm() {
+    // Читаем редактируемые поля перед сохранением
+    const nameVal  = document.getElementById('client-name')?.value?.trim();
+    const phoneVal = document.getElementById('client-phone')?.value?.trim();
+
+    if (nameVal)  App.booking.user = { ...App.booking.user, first_name: nameVal };
+    if (phoneVal) App.booking.phone = phoneVal;
+
     TelegramAPI.hapticMedium();
     TelegramAPI.showMainButtonProgress();
 
     setTimeout(() => {
       TelegramAPI.hideMainButtonProgress();
-      const { service, date, time } = App.booking;
+
+      const { service, date, time, user, phone } = App.booking;
+
+      // Добавляем в список записей клиента
       App.bookings.unshift({
-        id: 'b' + Date.now(),
+        id:          'b' + Date.now(),
         serviceId:   service.id,
         serviceName: service.title,
         date:        new Date(date),
@@ -90,6 +102,20 @@ const SummaryScreen = {
         status: 'confirmed',
         price:  service.price,
       });
+
+      // Добавляем в список мастера как «ожидает подтверждения»
+      MASTER_BOOKINGS.unshift({
+        id:          'mb' + Date.now(),
+        clientName:  user?.first_name || 'Клиент',
+        serviceId:   service.id,
+        serviceName: service.title,
+        date:        new Date(date),
+        time,
+        status:      'pending',
+        price:       service.price,
+        phone:       phone || 'не указан',
+      });
+
       Router.push('success', null);
     }, 600);
   },

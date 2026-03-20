@@ -70,9 +70,11 @@ const OnboardingScreen = {
               <div class="onboarding-feature-text"><strong>Ваша ссылка</strong>t.me/anna_beauty_bot</div>
               <div class="onboarding-arrow">⎘</div>
             </div>
-            <div class="onboarding-feature">
+            <div class="onboarding-feature onboarding-feature-link"
+                 onclick="App.showSnackbar('Уведомления о новых записях приходят автоматически в этот чат 🔔')">
               <div class="onboarding-feature-icon">🔔</div>
               <div class="onboarding-feature-text"><strong>Уведомления</strong>Приходят сразу при новой записи</div>
+              <div class="onboarding-arrow">›</div>
             </div>
             <div class="onboarding-feature onboarding-feature-link"
                  onclick="OnboardingScreen.goScreen('dashboard')">

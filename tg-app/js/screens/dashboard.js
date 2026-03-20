@@ -79,7 +79,7 @@ const DashboardScreen = {
           <!-- Ближайшие записи -->
           <div class="dashboard-section-title">
             Ближайшие записи
-            <span onclick="App.goTab('dashboard'); Router.push('master-bookings', null)"
+            <span onclick="TelegramAPI.hapticLight(); Router.push('master-bookings', null)"
                   style="font-size:13px;color:var(--tg-theme-link-color);cursor:pointer">
               Все записи →
             </span>

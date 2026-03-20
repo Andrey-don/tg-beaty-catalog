@@ -6,7 +6,7 @@ const MasterPortfolioScreen = {
   render() {
     const photosHTML = MASTER_PORTFOLIO.map(p => `
       <div class="portfolio-item" style="background: ${p.gradient}"
-           onclick="TelegramAPI.hapticLight(); Router.push('photo', p)">
+           onclick="MasterPortfolioScreen.openPhoto('${p.id}')">
         <div class="portfolio-item-emoji">${p.emoji}</div>
         <div class="portfolio-item-title">${p.title}</div>
       </div>
@@ -30,6 +30,12 @@ const MasterPortfolioScreen = {
 
   init() {
     TelegramAPI.hideMainButton();
+  },
+
+  openPhoto(photoId) {
+    TelegramAPI.hapticLight();
+    const item = MASTER_PORTFOLIO.find(p => p.id === photoId);
+    if (item) Router.push('photo', item);
   },
 
   addPhoto() {
