@@ -185,7 +185,7 @@ function generateSlots(date) {
 }
 
 /**
- * Возвращает массив дат для выбора (ближайшие 14 дней, пропуская воскресенья).
+ * Возвращает массив дат для выбора (ближайшие 30 календарных дней).
  * @returns {Array<Date>}
  */
 function getAvailableDates() {
@@ -193,16 +193,10 @@ function getAvailableDates() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  let current = new Date(today);
-  let added = 0;
-
-  while (added < 14) {
-    // Пропускаем воскресенье
-    if (current.getDay() !== 0) {
-      dates.push(new Date(current));
-      added++;
-    }
-    current.setDate(current.getDate() + 1);
+  for (let i = 0; i < 30; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
+    dates.push(d);
   }
 
   return dates;

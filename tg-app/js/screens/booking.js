@@ -11,15 +11,21 @@ const BookingScreen = {
     this.dates = getAvailableDates();
     this.selectedTime = null;
 
+    // Найти первый день, где есть свободные слоты
+    const firstAvail = this.dates.findIndex(d => generateSlots(d).some(s => !s.busy));
+    this.selectedDateIndex = firstAvail >= 0 ? firstAvail : 0;
+
     const datesHTML = this.dates.map((date, index) => {
       const slots = generateSlots(date);
-      const hasSlots = slots.some(s => !s.busy);
+      const hasFree = slots.some(s => !s.busy);
+      const isDisabled = !hasFree; // воскресенье (0 слотов) или все слоты заняты
+      const isActive = index === this.selectedDateIndex;
       return `
-        <button class="date-chip ${index === 0 ? 'active' : ''}"
-                onclick="BookingScreen.selectDate(${index})">
+        <button class="date-chip ${isActive ? 'active' : ''} ${isDisabled ? 'disabled' : ''}"
+                ${isDisabled ? 'disabled' : `onclick="BookingScreen.selectDate(${index})"`}>
           <span class="date-day-name">${DAY_NAMES_SHORT[date.getDay()]}</span>
           <span class="date-day-num">${date.getDate()}</span>
-          ${hasSlots ? '<span class="date-has-slots">●</span>' : ''}
+          ${hasFree ? '<span class="date-has-slots">●</span>' : ''}
         </button>
       `;
     }).join('');
@@ -35,7 +41,7 @@ const BookingScreen = {
         <div class="section-title">Доступное время</div>
 
         <div class="time-slots-grid" id="slots-grid">
-          ${this._renderSlots(0)}
+          ${this._renderSlots(this.selectedDateIndex)}
         </div>
 
         <div class="booking-summary-bar" id="booking-summary-bar">

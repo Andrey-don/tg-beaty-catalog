@@ -737,6 +737,12 @@ body {
   color: var(--tg-theme-button-text-color);
 }
 
+.date-chip:disabled,
+.date-chip.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
 .date-chip.active .date-day-name,
 .date-chip.active .date-has-slots {
   color: var(--tg-theme-button-text-color);
