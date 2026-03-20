@@ -20,12 +20,6 @@ const DashboardScreen = {
       .slice(0, 4);
 
     // Статистика
-    const todayBookings = MASTER_BOOKINGS.filter(b => {
-      const d = new Date(b.date); d.setHours(0, 0, 0, 0);
-      const t = new Date(); t.setHours(0, 0, 0, 0);
-      return d.getTime() === t.getTime();
-    });
-
     const monthIncome = MASTER_BOOKINGS
       .filter(b => b.status === 'confirmed')
       .reduce((sum, b) => sum + b.price, 0);
@@ -63,16 +57,12 @@ const DashboardScreen = {
               <div class="stat-card-label">Новых заявок</div>
             </div>
             <div class="stat-card">
-              <div class="stat-card-value">${todayBookings.length}</div>
-              <div class="stat-card-label">Записей сегодня</div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-card-value accent">${formatPrice(monthIncome)}</div>
-              <div class="stat-card-label">Доход (подтверждённые)</div>
-            </div>
-            <div class="stat-card">
               <div class="stat-card-value">${MASTER_BOOKINGS.length}</div>
               <div class="stat-card-label">Всего записей</div>
+            </div>
+            <div class="stat-card" style="grid-column: span 2">
+              <div class="stat-card-value accent">${formatPrice(monthIncome)}</div>
+              <div class="stat-card-label">Доход (подтверждённые)</div>
             </div>
           </div>
 
