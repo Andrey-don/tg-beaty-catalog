@@ -1,0 +1,1073 @@
+/* ===================================================
+   ДИЗАЙН-СИСТЕМА — Бьюти каталог Telegram Mini App
+   Все цвета только через CSS-переменные Telegram.
+   #2AABEE используется как fallback при открытии
+   вне Telegram (в браузере для разработки).
+   =================================================== */
+
+/* --- Базовые переменные с fallback для браузера --- */
+:root {
+  --tg-theme-bg-color: #ffffff;
+  --tg-theme-text-color: #000000;
+  --tg-theme-hint-color: #999999;
+  --tg-theme-link-color: #2AABEE;
+  --tg-theme-button-color: #2AABEE;
+  --tg-theme-button-text-color: #ffffff;
+  --tg-theme-secondary-bg-color: #f1f1f1;
+
+  /* Радиусы скруглений */
+  --radius-card: 16px;
+  --radius-btn: 12px;
+  --radius-badge: 8px;
+
+  /* Отступы */
+  --padding-screen: 16px;
+  --gap-cards: 12px;
+
+  /* Высота нижней навигации */
+  --nav-height: 60px;
+
+  /* Минимальная высота кнопок (требование курса и брифа) */
+  --btn-min-height: 44px;
+
+  /* Тень для карточек */
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* --- Сброс стилей и базовые настройки --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden; /* Скролл управляется внутри экранов */
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 15px;
+  line-height: 1.4;
+  background-color: var(--tg-theme-bg-color);
+  color: var(--tg-theme-text-color);
+  /* Только мобильная ширина */
+  max-width: 430px;
+  margin: 0 auto;
+}
+
+/* --- Основной контейнер --- */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh; /* Dynamic viewport height для мобильных */
+  overflow: hidden;
+}
+
+/* --- Контейнер экранов --- */
+#screen-container {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  padding-bottom: var(--nav-height);
+}
+
+/* === НИЖНЯЯ НАВИГАЦИЯ === */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 430px;
+  margin: 0 auto;
+  height: var(--nav-height);
+  background-color: var(--tg-theme-bg-color);
+  border-top: 1px solid var(--tg-theme-secondary-bg-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  z-index: 100;
+}
+
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  min-height: var(--btn-min-height);
+  color: var(--tg-theme-hint-color);
+  transition: color 0.2s ease;
+}
+
+.nav-item.active {
+  color: var(--tg-theme-button-color);
+}
+
+.nav-icon {
+  font-size: 20px;
+  line-height: 1;
+}
+
+.nav-label {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* Скрыть нижнюю навигацию (для экрана успеха) */
+.bottom-nav.hidden {
+  display: none;
+}
+
+/* === АНИМАЦИИ ПЕРЕХОДОВ МЕЖДУ ЭКРАНАМИ === */
+
+/* Экран выезжает слева направо при переходе вперёд */
+.screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: var(--tg-theme-bg-color);
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Анимация появления экрана (push — справа) */
+.screen-enter {
+  animation: slideInRight 0.25s ease forwards;
+}
+
+/* Анимация появления экрана (pop — слева) */
+.screen-enter-back {
+  animation: slideInLeft 0.25s ease forwards;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); opacity: 0.8; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+@keyframes slideInLeft {
+  from { transform: translateX(-30%); opacity: 0.8; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+/* === СКЕЛЕТОН-ЗАГРУЗКА === */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--tg-theme-secondary-bg-color) 25%,
+    rgba(0,0,0,0.05) 50%,
+    var(--tg-theme-secondary-bg-color) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite;
+  border-radius: var(--radius-card);
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-photo {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
+}
+
+.skeleton-line {
+  height: 16px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.skeleton-line.short { width: 60%; }
+.skeleton-line.medium { width: 80%; }
+.skeleton-line.full { width: 100%; }
+
+/* === КАРТОЧКИ УСЛУГ === */
+.services-list {
+  padding: var(--padding-screen);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-cards);
+}
+
+.service-card {
+  background-color: var(--tg-theme-secondary-bg-color);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Визуальный отклик на касание */
+.service-card:active {
+  transform: scale(0.98);
+}
+
+/* Фото услуги (заглушка с градиентом) */
+.service-card-photo {
+  width: 100%;
+  aspect-ratio: 16/9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+}
+
+.service-card-body {
+  padding: 12px 14px 14px;
+}
+
+.service-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--tg-theme-text-color);
+  margin-bottom: 4px;
+}
+
+.service-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  color: var(--tg-theme-hint-color);
+  font-size: 13px;
+}
+
+.service-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.service-price {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--tg-theme-text-color);
+}
+
+.service-price.from::before {
+  content: 'от ';
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--tg-theme-hint-color);
+}
+
+/* Кнопка «Выбрать» на карточке */
+.btn-select {
+  min-height: var(--btn-min-height);
+  padding: 0 18px;
+  background-color: var(--tg-theme-button-color);
+  color: var(--tg-theme-button-text-color);
+  border: none;
+  border-radius: var(--radius-btn);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-select:active {
+  opacity: 0.85;
+}
+
+/* === ШАПКА МАСТЕРА (экран каталога) === */
+.master-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px var(--padding-screen) 12px;
+  background-color: var(--tg-theme-bg-color);
+}
+
+.master-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f7b2c4, #e879a0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.master-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--tg-theme-text-color);
+}
+
+.master-spec {
+  font-size: 13px;
+  color: var(--tg-theme-hint-color);
+  margin-top: 2px;
+}
+
+/* === КАТЕГОРИИ (горизонтальный скролл) === */
+.categories-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Скрыть скроллбар */
+  padding: 0 var(--padding-screen) 12px;
+}
+
+.categories-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.categories-inner {
+  display: flex;
+  gap: 8px;
+  width: max-content;
+}
+
+.category-chip {
+  min-height: var(--btn-min-height);
+  padding: 0 16px;
+  background-color: var(--tg-theme-secondary-bg-color);
+  color: var(--tg-theme-hint-color);
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.category-chip.active {
+  background-color: var(--tg-theme-button-color);
+  color: var(--tg-theme-button-text-color);
+}
+
+/* === ЭКРАН ДЕТАЛЕЙ УСЛУГИ === */
+.service-detail-photo {
+  width: 100%;
+  aspect-ratio: 16/9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72px;
+  position: relative;
+}
+
+/* Точки-индикаторы галереи */
+.gallery-dots {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+}
+
+.gallery-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+}
+
+.gallery-dot.active {
+  background: rgba(255,255,255,0.95);
+  width: 16px;
+  border-radius: 3px;
+}
+
+.service-detail-body {
+  padding: var(--padding-screen);
+}
+
+.service-detail-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--tg-theme-text-color);
+  margin-bottom: 12px;
+  line-height: 1.3;
+}
+
+.badges-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background-color: var(--tg-theme-secondary-bg-color);
+  border-radius: var(--radius-badge);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tg-theme-text-color);
+}
+
+.badge.price {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--tg-theme-button-color);
+  background-color: var(--tg-theme-secondary-bg-color);
+}
+
+.service-detail-desc {
+  font-size: 14px;
+  color: var(--tg-theme-hint-color);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.read-more-btn {
+  background: none;
+  border: none;
+  color: var(--tg-theme-link-color);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.master-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background-color: var(--tg-theme-secondary-bg-color);
+  border-radius: var(--radius-card);
+  margin-top: 8px;
+}
+
+.master-block-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f7b2c4, #e879a0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.master-block-name {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.master-block-rating {
+  font-size: 13px;
+  color: var(--tg-theme-hint-color);
+  margin-top: 2px;
+}
+
+/* === ЭКРАН ВЫБОРА ДАТЫ/ВРЕМЕНИ === */
+.step-indicator {
+  text-align: center;
+  padding: 16px;
+  font-size: 13px;
+  color: var(--tg-theme-hint-color);
+  font-weight: 500;
+}
+
+.dates-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 0 var(--padding-screen) 12px;
+}
+
+.dates-scroll::-webkit-scrollbar { display: none; }
+
+.dates-inner {
+  display: flex;
+  gap: 8px;
+  width: max-content;
+}
+
+.date-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 52px;
+  min-height: 64px;
+  padding: 10px 8px;
+  background-color: var(--tg-theme-secondary-bg-color);
+  border: none;
+  border-radius: var(--radius-btn);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  gap: 2px;
+}
+
+.date-chip.active {
+  background-color: var(--tg-theme-button-color);
+  color: var(--tg-theme-button-text-color);
+}
+
+.date-chip.active .date-day-name,
+.date-chip.active .date-has-slots {
+  color: var(--tg-theme-button-text-color);
+  opacity: 0.8;
+}
+
+.date-day-name {
+  font-size: 11px;
+  color: var(--tg-theme-hint-color);
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.date-day-num {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--tg-theme-text-color);
+  line-height: 1;
+}
+
+.date-chip.active .date-day-num {
+  color: var(--tg-theme-button-text-color);
+}
+
+.date-has-slots {
+  font-size: 10px;
+  color: var(--tg-theme-button-color);
+}
+
+.section-title {
+  padding: 8px var(--padding-screen) 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--tg-theme-text-color);
+}
+
+.time-slots-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 0 var(--padding-screen);
+}
+
+.time-slot {
+  min-height: var(--btn-min-height);
+  background-color: var(--tg-theme-secondary-bg-color);
+  border: 2px solid transparent;
+  border-radius: var(--radius-btn);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: var(--tg-theme-text-color);
+}
+
+.time-slot:active {
+  transform: scale(0.96);
+}
+
+.time-slot.selected {
+  background-color: var(--tg-theme-button-color);
+  color: var(--tg-theme-button-text-color);
+  border-color: var(--tg-theme-button-color);
+}
+
+.time-slot.busy {
+  background-color: transparent;
+  border-color: var(--tg-theme-secondary-bg-color);
+  color: var(--tg-theme-hint-color);
+  text-decoration: line-through;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Сводка выбора (снизу экрана выбора даты) */
+.booking-summary-bar {
+  margin: 16px var(--padding-screen) 0;
+  padding: 12px 14px;
+  background-color: var(--tg-theme-secondary-bg-color);
+  border-radius: var(--radius-card);
+  font-size: 14px;
+  color: var(--tg-theme-hint-color);
+}
+
+.booking-summary-bar strong {
+  color: var(--tg-theme-text-color);
+  display: block;
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+
+/* === ЭКРАН ИТОГА ЗАПИСИ === */
+.summary-screen {
+  padding: var(--padding-screen);
+}
+
+.summary-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.summary-card {
+  background-color: var(--tg-theme-secondary-bg-color);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.summary-card-photo {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+}
+
+.summary-card-body {
+  padding: 14px;
+}
+
+.summary-service-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.summary-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--tg-theme-text-color);
+  margin-bottom: 8px;
+}
+
+.summary-row:last-child {
+  margin-bottom: 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.summary-row-icon {
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.client-section {
+  background-color: var(--tg-theme-secondary-bg-color);
+  border-radius: var(--radius-card);
+  padding: 14px;
+}
+
+.client-label {
+  font-size: 12px;
+  color: var(--tg-theme-hint-color);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.client-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  padding: 4px 0;
+}
+
+.client-row-label {
+  color: var(--tg-theme-hint-color);
+}
+
+.btn-add-phone {
+  min-height: var(--btn-min-height);
+  width: 100%;
+  margin-top: 12px;
+  background-color: var(--tg-theme-bg-color);
+  color: var(--tg-theme-link-color);
+  border: 1.5px solid var(--tg-theme-link-color);
+  border-radius: var(--radius-btn);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* === ЭКРАН УСПЕХА === */
+.success-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px var(--padding-screen) var(--padding-screen);
+  min-height: calc(100vh - var(--nav-height));
+  text-align: center;
+}
+
+/* Анимация чекмарка */
+.success-checkmark {
+  font-size: 72px;
+  margin-bottom: 20px;
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes popIn {
+  0%   { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.success-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--tg-theme-text-color);
+  margin-bottom: 8px;
+}
+
+.success-subtitle {
+  font-size: 15px;
+  color: var(--tg-theme-hint-color);
+  margin-bottom: 28px;
+}
+
+.success-card {
+  width: 100%;
+  background-color: var(--tg-theme-secondary-bg-color);
+  border-radius: var(--radius-card);
+  padding: 16px;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.btn-calendar {
+  min-height: var(--btn-min-height);
+  width: 100%;
+  background-color: var(--tg-theme-secondary-bg-color);
+  color: var(--tg-theme-text-color);
+  border: none;
+  border-radius: var(--radius-btn);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 16px;
+}
+
+.reminder-text {
+  font-size: 13px;
+  color: var(--tg-theme-hint-color);
+}
+
+/* === ЭКРАН МОИ ЗАПИСИ === */
+.bookings-screen {
+  padding: var(--padding-screen);
+}
+
+.bookings-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+/* Вкладки */
+.tabs-row {
+  display: flex;
+  background-color: var(--tg-theme-secondary-bg-color);
+  border-radius: var(--radius-btn);
+  padding: 3px;
+  margin-bottom: 16px;
+}
+
+.tab-btn {
+  flex: 1;
+  min-height: 36px;
+  background: none;
+  border: none;
+  border-radius: calc(var(--radius-btn) - 2px);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tg-theme-hint-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-btn.active {
+  background-color: var(--tg-theme-bg-color);
+  color: var(--tg-theme-text-color);
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.booking-card {
+  background-color: var(--tg-theme-secondary-bg-color);
+  border-radius: var(--radius-card);
+  padding: 14px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.booking-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.booking-service-name {
+  font-size: 15px;
+  font-weight: 600;
+  flex: 1;
+  margin-right: 8px;
+}
+
+.status-badge {
+  font-size: 12px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.status-badge.confirmed {
+  background: rgba(39, 174, 96, 0.15);
+  color: #27ae60;
+}
+
+.status-badge.pending {
+  background: rgba(243, 156, 18, 0.15);
+  color: #f39c12;
+}
+
+.status-badge.cancelled {
+  background: rgba(231, 76, 60, 0.15);
+  color: #e74c3c;
+}
+
+.booking-card-date {
+  font-size: 13px;
+  color: var(--tg-theme-hint-color);
+  margin-bottom: 12px;
+}
+
+.booking-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-cancel-booking {
+  min-height: var(--btn-min-height);
+  flex: 1;
+  background: none;
+  border: 1.5px solid rgba(231, 76, 60, 0.4);
+  border-radius: var(--radius-btn);
+  color: #e74c3c;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-rebook {
+  min-height: var(--btn-min-height);
+  flex: 1;
+  background-color: var(--tg-theme-button-color);
+  color: var(--tg-theme-button-text-color);
+  border: none;
+  border-radius: var(--radius-btn);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Пустое состояние */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 48px 16px;
+  gap: 12px;
+}
+
+.empty-icon {
+  font-size: 56px;
+}
+
+.empty-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--tg-theme-text-color);
+}
+
+.empty-text {
+  font-size: 14px;
+  color: var(--tg-theme-hint-color);
+  line-height: 1.5;
+}
+
+.btn-primary {
+  min-height: var(--btn-min-height);
+  padding: 0 24px;
+  background-color: var(--tg-theme-button-color);
+  color: var(--tg-theme-button-text-color);
+  border: none;
+  border-radius: var(--radius-btn);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+/* === ЭКРАН ПРОФИЛЯ МАСТЕРА === */
+.master-profile-screen {
+  padding: 0 0 var(--padding-screen);
+}
+
+.master-cover {
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(135deg, #f7b2c4 0%, #e879a0 50%, #c44d90 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 20px;
+  gap: 8px;
+}
+
+.master-cover-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  border: 3px solid rgba(255,255,255,0.8);
+}
+
+.master-cover-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+}
+
+.master-cover-spec {
+  font-size: 13px;
+  color: rgba(255,255,255,0.85);
+}
+
+.master-info-section {
+  padding: 16px var(--padding-screen);
+  border-bottom: 1px solid var(--tg-theme-secondary-bg-color);
+}
+
+.master-info-title {
+  font-size: 13px;
+  color: var(--tg-theme-hint-color);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.master-info-text {
+  font-size: 14px;
+  color: var(--tg-theme-text-color);
+  line-height: 1.6;
+}
+
+.master-stats {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px var(--padding-screen);
+  border-bottom: 1px solid var(--tg-theme-secondary-bg-color);
+}
+
+.master-stat {
+  text-align: center;
+}
+
+.master-stat-num {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--tg-theme-text-color);
+}
+
+.master-stat-label {
+  font-size: 12px;
+  color: var(--tg-theme-hint-color);
+  margin-top: 2px;
+}
+
+/* === SNACKBAR (уведомления об ошибках) === */
+.snackbar {
+  position: fixed;
+  bottom: calc(var(--nav-height) + 12px);
+  left: var(--padding-screen);
+  right: var(--padding-screen);
+  max-width: calc(430px - 32px);
+  background-color: #333;
+  color: white;
+  padding: 12px 16px;
+  border-radius: var(--radius-btn);
+  font-size: 14px;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+.snackbar-action {
+  background: none;
+  border: none;
+  color: var(--tg-theme-button-color);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  margin-left: 12px;
+  white-space: nowrap;
+}
+
+/* === ВСПОМОГАТЕЛЬНЫЕ УТИЛИТЫ === */
+.pb-main-btn {
+  /* Отступ снизу чтобы контент не перекрывался MainButton */
+  padding-bottom: 80px;
+}
+
+.divider {
+  height: 1px;
+  background-color: var(--tg-theme-secondary-bg-color);
+  margin: 8px 0;
+}
+
+.text-hint {
+  color: var(--tg-theme-hint-color);
+}
+
+.text-center {
+  text-align: center;
+}
