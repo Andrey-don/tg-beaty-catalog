@@ -49,9 +49,12 @@ const SummaryScreen = {
 
             <div class="form-group" style="margin-bottom:10px">
               <label class="form-label">Телефон</label>
+              <div class="form-hint">Пример: +7 988 123-45-67</div>
               <input class="form-input" id="client-phone" type="tel"
                      value="${phone || ''}"
-                     placeholder="+7 (999) 000-00-00">
+                     placeholder="+7 988 123-45-67"
+                     maxlength="16"
+                     oninput="SummaryScreen.formatPhone(this)">
             </div>
 
             <button class="btn-add-phone" onclick="SummaryScreen.fillFromTelegram()">
@@ -65,6 +68,27 @@ const SummaryScreen = {
 
   init() {
     TelegramAPI.showMainButton('Подтвердить запись', () => this.confirm());
+  },
+
+  formatPhone(input) {
+    // Оставляем только + и цифры
+    let val = input.value.replace(/[^\d+]/g, '');
+    // Всегда начинаем с +7
+    if (!val.startsWith('+')) val = '+' + val;
+    if (val === '+' || val === '') { input.value = val; return; }
+    // Убираем лишние символы кроме первого +
+    val = '+' + val.slice(1).replace(/\D/g, '');
+    // Максимум 12 цифр после +
+    if (val.length > 12) val = val.slice(0, 12);
+    // Форматируем: +7 XXX XXX-XX-XX
+    const digits = val.slice(1); // без +
+    let formatted = '+';
+    if (digits.length > 0) formatted += digits.slice(0, 1);
+    if (digits.length > 1) formatted += ' ' + digits.slice(1, 4);
+    if (digits.length > 4) formatted += ' ' + digits.slice(4, 7);
+    if (digits.length > 7) formatted += '-' + digits.slice(7, 9);
+    if (digits.length > 9) formatted += '-' + digits.slice(9, 11);
+    input.value = formatted;
   },
 
   fillFromTelegram() {
