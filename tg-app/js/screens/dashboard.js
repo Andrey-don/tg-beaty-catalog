@@ -58,13 +58,13 @@ const DashboardScreen = {
 
           <!-- Статистика -->
           <div class="dashboard-stats">
-            <div class="stat-card">
-              <div class="stat-card-value accent">${todayBookings.length}</div>
-              <div class="stat-card-label">Записей сегодня</div>
+            <div class="stat-card" style="cursor:pointer" onclick="TelegramAPI.hapticLight(); Router.push('master-bookings', null)">
+              <div class="stat-card-value accent">${pendingCount}</div>
+              <div class="stat-card-label">Новых заявок</div>
             </div>
             <div class="stat-card">
-              <div class="stat-card-value">${pendingCount}</div>
-              <div class="stat-card-label">Ожидают подтверждения</div>
+              <div class="stat-card-value">${todayBookings.length}</div>
+              <div class="stat-card-label">Записей сегодня</div>
             </div>
             <div class="stat-card">
               <div class="stat-card-value accent">${formatPrice(monthIncome)}</div>

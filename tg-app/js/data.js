@@ -372,6 +372,20 @@ function formatPrice(price) {
   return price.toLocaleString('ru-RU') + ' ₽';
 }
 
+/**
+ * Склоняет слово «заявка» по числу с правильным прилагательным.
+ * 1 → «1 новая заявка», 2–4 → «2 новые заявки», 5+ → «5 новых заявок»
+ * Правила для 11–19 и двузначных чисел соблюдены.
+ */
+function pluralZayavki(n) {
+  const lastTwo = n % 100;
+  const lastOne = n % 10;
+  if (lastTwo >= 11 && lastTwo <= 19) return `${n} новых заявок`;
+  if (lastOne === 1)                  return `${n} новая заявка`;
+  if (lastOne >= 2 && lastOne <= 4)   return `${n} новые заявки`;
+  return `${n} новых заявок`;
+}
+
 /** Форматирует длительность как «90 мин» */
 function formatDuration(minutes) {
   if (minutes >= 60) {

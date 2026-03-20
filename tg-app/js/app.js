@@ -108,7 +108,7 @@ const App = {
     if (this.mode === 'master') {
       const pendingCount = MASTER_BOOKINGS.filter(b => b.status === 'pending').length;
       const badge = pendingCount > 0
-        ? `<span class="nav-badge">${pendingCount}</span>`
+        ? `<span class="nav-badge" title="${pluralZayavki(pendingCount)}">${pendingCount}</span>`
         : '';
       nav.innerHTML = `
         <button class="nav-item active" data-tab="dashboard" onclick="App.goTab('dashboard')">

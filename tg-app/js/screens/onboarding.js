@@ -10,7 +10,7 @@ const OnboardingScreen = {
       ? `<span class="notif-badge">${pendingCount}</span>`
       : '';
     const pendingText = pendingCount > 0
-      ? `${pendingCount} новых заявок — нажмите, чтобы открыть`
+      ? `${pluralZayavki(pendingCount)} — нажмите, чтобы открыть`
       : 'Приходят сразу при новой записи';
 
     return `
