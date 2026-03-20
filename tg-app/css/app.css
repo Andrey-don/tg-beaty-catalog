@@ -701,20 +701,99 @@ body {
   font-weight: 500;
 }
 
-.dates-scroll {
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  padding: 0 var(--padding-screen) 12px;
+/* ── Календарная сетка (booking screen) ─────────────────── */
+.cal-wrap {
+  padding: 0 var(--padding-screen) 4px;
 }
 
-.dates-scroll::-webkit-scrollbar { display: none; }
+.cal-month-label {
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--tg-theme-text-color);
+  margin-bottom: 10px;
+}
 
-.dates-inner {
+.cal-day-names,
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.cal-day-names {
+  margin-bottom: 4px;
+}
+
+.cal-header {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--tg-theme-hint-color);
+  padding: 2px 0 4px;
+  text-transform: uppercase;
+}
+
+.cal-day {
   display: flex;
-  gap: 8px;
-  width: max-content;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  min-height: 38px;
+  background: var(--tg-theme-secondary-bg-color);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+  padding: 2px;
+}
+
+.cal-day.empty {
+  background: transparent;
+  cursor: default;
+  pointer-events: none;
+}
+
+.cal-day.active {
+  background: var(--tg-theme-button-color);
+}
+
+.cal-day-num {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--tg-theme-text-color);
+  line-height: 1;
+}
+
+.cal-day.active .cal-day-num {
+  color: var(--tg-theme-button-text-color);
+}
+
+.cal-dot {
+  font-size: 7px;
+  color: var(--tg-theme-button-color);
+  margin-top: 2px;
+  line-height: 1;
+}
+
+.cal-day.active .cal-dot {
+  color: var(--tg-theme-button-text-color);
+  opacity: 0.8;
+}
+
+.cal-day.sunday .cal-day-num {
+  color: #e53935;
+}
+
+.cal-day.active.sunday .cal-day-num {
+  color: var(--tg-theme-button-text-color);
+}
+
+.cal-day:disabled,
+.cal-day.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
 }
 
 .date-chip {

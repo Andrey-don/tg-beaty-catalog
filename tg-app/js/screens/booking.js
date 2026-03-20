@@ -2,6 +2,9 @@
  * booking.js — Выбор даты и времени
  */
 
+const MONTH_NAMES = ['Январь','Февраль','Март','Апрель','Май','Июнь',
+                     'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+
 const BookingScreen = {
   dates: [],
   selectedDateIndex: 0,
@@ -15,17 +18,31 @@ const BookingScreen = {
     const firstAvail = this.dates.findIndex(d => generateSlots(d).some(s => !s.busy));
     this.selectedDateIndex = firstAvail >= 0 ? firstAvail : 0;
 
-    const datesHTML = this.dates.map((date, index) => {
-      const slots = generateSlots(date);
+    const first = this.dates[0];
+    const last  = this.dates[this.dates.length - 1];
+    const monthLabel = first.getMonth() === last.getMonth()
+      ? `${MONTH_NAMES[first.getMonth()]} ${first.getFullYear()}`
+      : `${MONTH_NAMES[first.getMonth()]} — ${MONTH_NAMES[last.getMonth()]} ${last.getFullYear()}`;
+
+    // Смещение первой даты (неделя начинается с Пн: Пн=0 … Вс=6)
+    const startOffset = (first.getDay() + 6) % 7;
+    const emptyPad = Array(startOffset).fill('<div class="cal-day empty"></div>').join('');
+
+    const dayHeaders = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс']
+      .map(d => `<div class="cal-header">${d}</div>`).join('');
+
+    const dayCells = this.dates.map((date, index) => {
+      const slots   = generateSlots(date);
       const hasFree = slots.some(s => !s.busy);
-      const isDisabled = !hasFree; // воскресенье (0 слотов) или все слоты заняты
-      const isActive = index === this.selectedDateIndex;
+      const isDisabled = !hasFree;
+      const isActive   = index === this.selectedDateIndex;
+      const isSunday   = date.getDay() === 0;
       return `
-        <button class="date-chip ${isActive ? 'active' : ''} ${isDisabled ? 'disabled' : ''}"
+        <button class="cal-day ${isActive ? 'active' : ''} ${isDisabled ? 'disabled' : ''} ${isSunday ? 'sunday' : ''}"
+                data-idx="${index}"
                 ${isDisabled ? 'disabled' : `onclick="BookingScreen.selectDate(${index})"`}>
-          <span class="date-day-name">${DAY_NAMES_SHORT[date.getDay()]}</span>
-          <span class="date-day-num">${date.getDate()}</span>
-          ${hasFree ? '<span class="date-has-slots">●</span>' : ''}
+          <span class="cal-day-num">${date.getDate()}</span>
+          ${hasFree ? '<span class="cal-dot">●</span>' : ''}
         </button>
       `;
     }).join('');
@@ -34,8 +51,13 @@ const BookingScreen = {
       <div class="screen pb-main-btn">
         <div class="step-indicator">Шаг 1 из 2</div>
 
-        <div class="dates-scroll">
-          <div class="dates-inner">${datesHTML}</div>
+        <div class="cal-wrap">
+          <div class="cal-month-label">${monthLabel}</div>
+          <div class="cal-day-names">${dayHeaders}</div>
+          <div class="cal-grid">
+            ${emptyPad}
+            ${dayCells}
+          </div>
         </div>
 
         <div class="section-title">Доступное время</div>
@@ -78,8 +100,8 @@ const BookingScreen = {
     this.selectedDateIndex = index;
     this.selectedTime = null;
 
-    document.querySelectorAll('.date-chip').forEach((el, i) => {
-      el.classList.toggle('active', i === index);
+    document.querySelectorAll('.cal-day[data-idx]').forEach(el => {
+      el.classList.toggle('active', parseInt(el.dataset.idx) === index);
     });
     document.getElementById('slots-grid').innerHTML = this._renderSlots(index);
     document.getElementById('selected-datetime-text').textContent = 'Выберите время';
