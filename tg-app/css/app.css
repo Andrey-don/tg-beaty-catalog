@@ -287,7 +287,183 @@ body {
   opacity: 0.85;
 }
 
-/* === ШАПКА МАСТЕРА (экран каталога) === */
+/* === ПРОФИЛЬ МАСТЕРА (главный экран клиента) === */
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px var(--padding-screen) 20px;
+  text-align: center;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #7b68ee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 12px;
+  flex-shrink: 0;
+}
+
+.profile-name {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--tg-theme-text-color);
+  margin-bottom: 4px;
+}
+
+.profile-spec {
+  font-size: 14px;
+  color: var(--tg-theme-hint-color);
+  margin-bottom: 8px;
+}
+
+.profile-address {
+  font-size: 14px;
+  color: var(--tg-theme-link-color);
+  margin-bottom: 6px;
+  cursor: pointer;
+}
+
+.profile-stats {
+  font-size: 13px;
+  color: var(--tg-theme-hint-color);
+  margin-bottom: 16px;
+}
+
+.profile-actions {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.profile-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--tg-theme-secondary-bg-color);
+  border: none;
+  border-radius: var(--radius-card);
+  padding: 10px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--tg-theme-text-color);
+  cursor: pointer;
+  min-height: var(--btn-min-height);
+  transition: opacity 0.15s;
+}
+
+.profile-btn:active {
+  opacity: 0.7;
+}
+
+.profile-section-label {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--tg-theme-text-color);
+  padding: 4px var(--padding-screen) 12px;
+}
+
+.profile-portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  margin-bottom: 24px;
+  padding: 0 var(--padding-screen);
+}
+
+.profile-portfolio-item {
+  aspect-ratio: 1;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.profile-portfolio-item:active {
+  opacity: 0.8;
+  transform: scale(0.97);
+}
+
+.profile-portfolio-emoji {
+  font-size: 32px;
+}
+
+.profile-services-list {
+  padding: 0 var(--padding-screen);
+  background: var(--tg-theme-secondary-bg-color);
+  border-radius: var(--radius-card);
+  margin: 0 var(--padding-screen) 24px;
+  overflow: hidden;
+}
+
+.profile-service-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--tg-theme-bg-color);
+  transition: opacity 0.15s;
+}
+
+.profile-service-row:last-child {
+  border-bottom: none;
+}
+
+.profile-service-row:active {
+  opacity: 0.7;
+}
+
+.profile-service-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.profile-service-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-service-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--tg-theme-text-color);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-service-duration {
+  font-size: 13px;
+  color: var(--tg-theme-hint-color);
+}
+
+.profile-service-price {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--tg-theme-text-color);
+  flex-shrink: 0;
+}
+
+/* Старые стили шапки (оставляем для совместимости) */
 .master-header {
   display: flex;
   align-items: center;
