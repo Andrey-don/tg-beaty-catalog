@@ -153,8 +153,37 @@ const App = {
   },
 
   switchMode(mode) {
+    TelegramAPI.hapticLight();
+    this.mode = mode;
+
+    // Обновляем URL без перезагрузки (данные в памяти сохраняются)
     const url = window.location.pathname + (mode === 'master' ? '?mode=master' : '');
-    window.location.href = url;
+    window.history.pushState({}, '', url);
+
+    // Перерисовываем переключатель и навигацию
+    const toggle = document.getElementById('mode-toggle');
+    if (toggle) {
+      toggle.innerHTML = `
+        <button class="${this.mode === 'client' ? 'active' : ''}" onclick="App.switchMode('client')">Клиент</button>
+        <span>/</span>
+        <button class="${this.mode === 'master' ? 'active' : ''}" onclick="App.switchMode('master')">Мастер</button>
+      `;
+    }
+    this._renderNav();
+
+    // Переходим на стартовый экран режима
+    if (mode === 'master') {
+      if (!MASTER_ONBOARDING_DONE) {
+        Router.stack = [{ name: 'onboarding', data: null }];
+        Router._show('onboarding', null, false, 'push');
+      } else {
+        Router.stack = [{ name: 'dashboard', data: null }];
+        Router._show('dashboard', null, false, 'push');
+      }
+    } else {
+      Router.stack = [{ name: 'catalog', data: null }];
+      Router._show('catalog', null, false, 'push');
+    }
   },
 
   // =============================================

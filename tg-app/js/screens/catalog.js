@@ -86,7 +86,8 @@ const CatalogScreen = {
 
   writeMaster() {
     TelegramAPI.hapticLight();
-    App.showSnackbar('Написать мастеру в Telegram');
+    // В Telegram открывает чат с ботом мастера; в браузере — новая вкладка
+    window.open('https://t.me/anna_beauty_bot', '_blank');
   },
 };
 
