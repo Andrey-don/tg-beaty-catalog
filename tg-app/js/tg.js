@@ -9,7 +9,10 @@
  */
 
 // Telegram WebApp объект
-const TG = window.Telegram?.WebApp || null;
+// SDK всегда создаёт window.Telegram.WebApp даже в браузере,
+// поэтому проверяем initData — он пустой вне Telegram.
+const _tgRaw = window.Telegram?.WebApp || null;
+const TG = (_tgRaw?.initData?.length > 0) ? _tgRaw : null;
 
 const TelegramAPI = {
 
@@ -78,7 +81,10 @@ const TelegramAPI = {
    * @param {Function} onClick — обработчик нажатия
    */
   showMainButton(text, onClick) {
-    if (!TG) return;
+    if (!TG) {
+      this._showBrowserMainButton(text, onClick);
+      return;
+    }
 
     const btn = TG.MainButton;
     btn.setText(text);
@@ -95,32 +101,51 @@ const TelegramAPI = {
 
   /** Скрывает MainButton */
   hideMainButton() {
-    if (!TG) return;
+    if (!TG) {
+      this._hideBrowserMainButton();
+      return;
+    }
     TG.MainButton.hide();
   },
 
   /** Отключает MainButton (серая, не кликабельная) */
   disableMainButton() {
-    if (!TG) return;
+    if (!TG) {
+      const btn = document.getElementById('browser-main-button');
+      if (btn) { btn.disabled = true; btn.style.opacity = '0.5'; }
+      return;
+    }
     TG.MainButton.disable();
   },
 
   /** Включает MainButton */
   enableMainButton() {
-    if (!TG) return;
+    if (!TG) {
+      const btn = document.getElementById('browser-main-button');
+      if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+      return;
+    }
     TG.MainButton.enable();
   },
 
   /** Показывает индикатор загрузки на MainButton (во время запросов) */
   showMainButtonProgress() {
-    if (!TG) return;
+    if (!TG) {
+      const btn = document.getElementById('browser-main-button');
+      if (btn) { btn.disabled = true; btn.style.opacity = '0.7'; btn.textContent = '...'; }
+      return;
+    }
     TG.MainButton.showProgress(true); // true = оставить текст
     TG.MainButton.disable();
   },
 
   /** Скрывает индикатор загрузки на MainButton */
   hideMainButtonProgress() {
-    if (!TG) return;
+    if (!TG) {
+      const btn = document.getElementById('browser-main-button');
+      if (btn) { btn.disabled = false; btn.style.opacity = '1'; }
+      return;
+    }
     TG.MainButton.hideProgress();
     TG.MainButton.enable();
   },
@@ -132,23 +157,102 @@ const TelegramAPI = {
    * @param {Function} onClick
    */
   showBackButton(onClick) {
-    if (!TG) return;
-
-    const btn = TG.BackButton;
-    // Удаляем предыдущий обработчик
-    btn.offClick(btn._currentHandler);
-    btn._currentHandler = onClick;
-    btn.onClick(onClick);
-    btn.show();
+    if (TG) {
+      // Внутри Telegram — нативная кнопка в шапке
+      const btn = TG.BackButton;
+      btn.offClick(btn._currentHandler);
+      btn._currentHandler = onClick;
+      btn.onClick(onClick);
+      btn.show();
+    } else {
+      // В браузере — показываем HTML-кнопку для тестирования
+      this._showBrowserBackButton(onClick);
+    }
   },
 
   /** Скрывает BackButton */
   hideBackButton() {
-    if (!TG) return;
-    const btn = TG.BackButton;
-    btn.offClick(btn._currentHandler);
-    btn._currentHandler = null;
-    btn.hide();
+    if (TG) {
+      const btn = TG.BackButton;
+      btn.offClick(btn._currentHandler);
+      btn._currentHandler = null;
+      btn.hide();
+    } else {
+      this._hideBrowserBackButton();
+    }
+  },
+
+  /** Показывает кнопку «Назад» в браузере (только для тестирования) */
+  _showBrowserBackButton(onClick) {
+    let bar = document.getElementById('browser-back-bar');
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.id = 'browser-back-bar';
+      bar.style.cssText = `
+        position: fixed; top: 0; left: 0; right: 0;
+        max-width: 430px; margin: 0 auto;
+        background: var(--tg-theme-bg-color);
+        border-bottom: 1px solid var(--tg-theme-secondary-bg-color);
+        padding: 10px 16px;
+        z-index: 200;
+        display: flex;
+        align-items: center;
+      `;
+      document.getElementById('app').appendChild(bar);
+    }
+    bar.innerHTML = `
+      <button onclick="" style="
+        background: none; border: none; cursor: pointer;
+        font-size: 15px; color: var(--tg-theme-link-color);
+        display: flex; align-items: center; gap: 4px;
+        padding: 4px 0; min-height: 44px;
+      ">← Назад</button>
+    `;
+    bar.querySelector('button').onclick = onClick;
+    bar.style.display = 'flex';
+
+    // Добавляем отступ сверху чтобы контент не перекрывался
+    document.getElementById('screen-container').style.paddingTop = '44px';
+  },
+
+  /** Скрывает браузерную кнопку «Назад» */
+  _hideBrowserBackButton() {
+    const bar = document.getElementById('browser-back-bar');
+    if (bar) bar.style.display = 'none';
+    document.getElementById('screen-container').style.paddingTop = '0';
+  },
+
+  /** Показывает кнопку MainButton в браузере (только для тестирования) */
+  _showBrowserMainButton(text, onClick) {
+    let btn = document.getElementById('browser-main-button');
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.id = 'browser-main-button';
+      btn.style.cssText = `
+        position: fixed; bottom: 60px; left: 0; right: 0;
+        max-width: 430px; margin: 0 auto;
+        background: var(--tg-theme-button-color);
+        color: var(--tg-theme-button-text-color);
+        border: none; cursor: pointer;
+        font-size: 15px; font-weight: 600;
+        padding: 0 16px;
+        height: 50px;
+        z-index: 100;
+        width: 100%;
+      `;
+      document.getElementById('app').appendChild(btn);
+    }
+    btn.textContent = text;
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.style.display = 'block';
+    btn.onclick = onClick;
+  },
+
+  /** Скрывает браузерную MainButton */
+  _hideBrowserMainButton() {
+    const btn = document.getElementById('browser-main-button');
+    if (btn) btn.style.display = 'none';
   },
 
   // ===== HAPTIC FEEDBACK =====

@@ -206,6 +206,95 @@ function getAvailableDates() {
 }
 
 // =============================================
+// РАСПИСАНИЕ МАСТЕРА
+// =============================================
+const MASTER_SCHEDULE = {
+  1: { enabled: true,  start: '10:00', end: '19:00', label: 'Пн' },
+  2: { enabled: true,  start: '10:00', end: '19:00', label: 'Вт' },
+  3: { enabled: true,  start: '10:00', end: '19:00', label: 'Ср' },
+  4: { enabled: true,  start: '10:00', end: '19:00', label: 'Чт' },
+  5: { enabled: true,  start: '10:00', end: '19:00', label: 'Пт' },
+  6: { enabled: true,  start: '11:00', end: '17:00', label: 'Сб' },
+  0: { enabled: false, start: '10:00', end: '18:00', label: 'Вс' },
+};
+
+// =============================================
+// ЗАПИСИ КЛИЕНТОВ (для экрана мастера)
+// =============================================
+const MASTER_BOOKINGS = [
+  {
+    id: 'mb1',
+    clientName: 'Мария К.',
+    serviceId: 1,
+    serviceName: 'Маникюр с гель-лаком',
+    date: (() => { const d = new Date(); d.setDate(d.getDate() + 1); return d; })(),
+    time: '11:00',
+    status: 'confirmed',
+    price: 2000,
+    phone: '+7 (999) 111-22-33',
+  },
+  {
+    id: 'mb2',
+    clientName: 'Елена В.',
+    serviceId: 5,
+    serviceName: 'Педикюр с покрытием',
+    date: (() => { const d = new Date(); d.setDate(d.getDate() + 1); return d; })(),
+    time: '13:00',
+    status: 'pending',
+    price: 3000,
+    phone: '+7 (988) 444-55-66',
+  },
+  {
+    id: 'mb3',
+    clientName: 'Ирина М.',
+    serviceId: 7,
+    serviceName: 'SPA-уход за руками',
+    date: (() => { const d = new Date(); d.setDate(d.getDate() + 2); return d; })(),
+    time: '15:30',
+    status: 'confirmed',
+    price: 1500,
+    phone: '+7 (916) 777-88-99',
+  },
+  {
+    id: 'mb4',
+    clientName: 'Анастасия П.',
+    serviceId: 3,
+    serviceName: 'Наращивание ногтей',
+    date: (() => { const d = new Date(); d.setDate(d.getDate() - 2); return d; })(),
+    time: '12:00',
+    status: 'confirmed',
+    price: 3500,
+    phone: '+7 (925) 100-20-30',
+  },
+  {
+    id: 'mb5',
+    clientName: 'Ольга Д.',
+    serviceId: 2,
+    serviceName: 'Маникюр классический',
+    date: (() => { const d = new Date(); d.setDate(d.getDate() + 3); return d; })(),
+    time: '10:00',
+    status: 'pending',
+    price: 1200,
+    phone: '+7 (903) 222-33-44',
+  },
+];
+
+// =============================================
+// ПОРТФОЛИО МАСТЕРА (заглушки фото)
+// =============================================
+const MASTER_PORTFOLIO = [
+  { id: 'p1', gradient: 'linear-gradient(135deg, #fce4ec, #f48fb1)', emoji: '💅', title: 'Нюдовый маникюр' },
+  { id: 'p2', gradient: 'linear-gradient(135deg, #f3e5f5, #ce93d8)', emoji: '✨', title: 'Цветочный дизайн' },
+  { id: 'p3', gradient: 'linear-gradient(135deg, #e8eaf6, #9fa8da)', emoji: '💎', title: 'Геометрия' },
+  { id: 'p4', gradient: 'linear-gradient(135deg, #e0f2f1, #80cbc4)', emoji: '🎨', title: 'Акварель' },
+  { id: 'p5', gradient: 'linear-gradient(135deg, #fbe9e7, #ff8a65)', emoji: '🌸', title: 'Розовый педикюр' },
+  { id: 'p6', gradient: 'linear-gradient(135deg, #f1f8e9, #aed581)', emoji: '🌿', title: 'Минимализм' },
+];
+
+// Флаг онбординга мастера
+let MASTER_ONBOARDING_DONE = false;
+
+// =============================================
 // ТЕСТОВЫЕ ЗАПИСИ (для экрана «Мои записи»)
 // =============================================
 const MOCK_BOOKINGS = [

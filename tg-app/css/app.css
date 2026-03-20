@@ -1071,3 +1071,761 @@ body {
 .text-center {
   text-align: center;
 }
+
+/* ===================================================
+   ПЕРЕКЛЮЧАТЕЛЬ РЕЖИМОВ (Клиент / Мастер)
+   По центру вверху — как в курсе
+   =================================================== */
+#mode-toggle {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  background: var(--tg-theme-secondary-bg-color);
+  border-radius: 20px;
+  padding: 3px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  gap: 0;
+}
+
+#mode-toggle button {
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: var(--tg-theme-hint-color);
+  cursor: pointer;
+  padding: 6px 18px;
+  border-radius: 17px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+#mode-toggle button.active {
+  background: var(--tg-theme-bg-color);
+  color: var(--tg-theme-text-color);
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+/* Отступ сверху для экранов чтобы не перекрывал переключатель */
+#app {
+  padding-top: 48px;
+}
+
+/* ===================================================
+   ЭКРАН ОНБОРДИНГА МАСТЕРА
+   =================================================== */
+.onboarding-screen {
+  padding: var(--padding-screen);
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - var(--nav-height));
+}
+
+.onboarding-steps {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 32px;
+  padding-top: 8px;
+}
+
+.onboarding-step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--tg-theme-secondary-bg-color);
+  transition: all 0.3s ease;
+}
+
+.onboarding-step-dot.active {
+  background: var(--tg-theme-button-color);
+  width: 24px;
+  border-radius: 4px;
+}
+
+.onboarding-step-dot.done {
+  background: var(--tg-theme-button-color);
+  opacity: 0.4;
+}
+
+.onboarding-illustration {
+  font-size: 80px;
+  text-align: center;
+  margin-bottom: 24px;
+  animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.onboarding-title {
+  font-size: 24px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 12px;
+  color: var(--tg-theme-text-color);
+}
+
+.onboarding-desc {
+  font-size: 15px;
+  color: var(--tg-theme-hint-color);
+  text-align: center;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.onboarding-features {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.onboarding-feature {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  background: var(--tg-theme-secondary-bg-color);
+  border-radius: var(--radius-card);
+}
+
+.onboarding-feature-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.onboarding-feature-text {
+  font-size: 14px;
+  color: var(--tg-theme-text-color);
+  line-height: 1.4;
+}
+
+.onboarding-feature-text strong {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.onboarding-feature-link {
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.onboarding-feature-link:active {
+  opacity: 0.75;
+  transform: scale(0.98);
+}
+
+.onboarding-arrow {
+  color: var(--tg-theme-hint-color);
+  font-size: 20px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.onboarding-section-label {
+  font-size: 13px;
+  color: var(--tg-theme-hint-color);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin: 16px 0 8px;
+}
+
+/* ===================================================
+   ДАШБОРД МАСТЕРА
+   =================================================== */
+.dashboard-screen {
+  padding: var(--padding-screen);
+  padding-bottom: 80px;
+}
+
+.dashboard-greeting {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.dashboard-date {
+  font-size: 14px;
+  color: var(--tg-theme-hint-color);
+  margin-bottom: 20px;
+}
+
+.dashboard-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--tg-theme-secondary-bg-color);
+  border-radius: var(--radius-card);
+  padding: 14px;
+}
+
+.stat-card-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--tg-theme-text-color);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.stat-card-value.accent {
+  color: var(--tg-theme-button-color);
+}
+
+.stat-card-label {
+  font-size: 12px;
+  color: var(--tg-theme-hint-color);
+}
+
+.dashboard-section-title {
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dashboard-section-title a {
+  font-size: 13px;
+  color: var(--tg-theme-link-color);
+  font-weight: 400;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.dashboard-booking-card {
+  background: var(--tg-theme-secondary-bg-color);
+  border-radius: var(--radius-card);
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dashboard-booking-time {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--tg-theme-button-color);
+  min-width: 52px;
+  text-align: center;
+}
+
+.dashboard-booking-info {
+  flex: 1;
+}
+
+.dashboard-booking-client {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.dashboard-booking-service {
+  font-size: 13px;
+  color: var(--tg-theme-hint-color);
+}
+
+/* ===================================================
+   УСЛУГИ МАСТЕРА
+   =================================================== */
+.master-services-screen {
+  padding: var(--padding-screen);
+  padding-bottom: 80px;
+}
+
+.master-services-screen .page-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.master-service-card {
+  background: var(--tg-theme-secondary-bg-color);
+  border-radius: var(--radius-card);
+  padding: 14px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.master-service-emoji {
+  font-size: 32px;
+  flex-shrink: 0;
+}
+
+.master-service-info {
+  flex: 1;
+}
+
+.master-service-name {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.master-service-meta {
+  font-size: 13px;
+  color: var(--tg-theme-hint-color);
+}
+
+.master-service-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: none;
+  background: var(--tg-theme-bg-color);
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s;
+}
+
+.btn-icon:active { opacity: 0.7; }
+
+.btn-add-service {
+  width: 100%;
+  min-height: var(--btn-min-height);
+  background: none;
+  border: 2px dashed var(--tg-theme-button-color);
+  border-radius: var(--radius-card);
+  color: var(--tg-theme-button-color);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+/* ===================================================
+   РЕДАКТИРОВАНИЕ УСЛУГИ
+   =================================================== */
+.service-edit-screen {
+  padding: var(--padding-screen);
+  padding-bottom: 100px;
+}
+
+.service-edit-screen .page-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-label {
+  font-size: 13px;
+  color: var(--tg-theme-hint-color);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  min-height: var(--btn-min-height);
+  padding: 10px 14px;
+  background: var(--tg-theme-secondary-bg-color);
+  border: 1.5px solid transparent;
+  border-radius: var(--radius-btn);
+  font-size: 15px;
+  color: var(--tg-theme-text-color);
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  border-color: var(--tg-theme-button-color);
+}
+
+.form-textarea {
+  min-height: 90px;
+  resize: none;
+  line-height: 1.5;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-hint {
+  font-size: 12px;
+  color: var(--tg-theme-hint-color);
+  margin-top: 4px;
+}
+
+.photo-placeholder {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: var(--tg-theme-secondary-bg-color);
+  border-radius: var(--radius-card);
+  border: 2px dashed var(--tg-theme-hint-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--tg-theme-hint-color);
+  opacity: 0.7;
+}
+
+.photo-placeholder .photo-icon {
+  font-size: 36px;
+}
+
+/* ===================================================
+   ПОРТФОЛИО МАСТЕРА
+   =================================================== */
+.portfolio-screen {
+  padding: var(--padding-screen);
+}
+
+.portfolio-screen .page-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.portfolio-item {
+  aspect-ratio: 1;
+  border-radius: var(--radius-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s;
+}
+
+.portfolio-item:active { transform: scale(0.97); }
+
+.portfolio-item-emoji {
+  font-size: 40px;
+}
+
+.portfolio-item-title {
+  font-size: 12px;
+  color: rgba(255,255,255,0.9);
+  font-weight: 600;
+  margin-top: 8px;
+  text-align: center;
+  padding: 0 4px;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.portfolio-add {
+  aspect-ratio: 1;
+  border-radius: var(--radius-card);
+  border: 2px dashed var(--tg-theme-button-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  gap: 6px;
+  background: none;
+}
+
+.portfolio-add-icon {
+  font-size: 32px;
+  color: var(--tg-theme-button-color);
+}
+
+.portfolio-add-text {
+  font-size: 12px;
+  color: var(--tg-theme-button-color);
+  font-weight: 600;
+}
+
+/* ===================================================
+   РАСПИСАНИЕ МАСТЕРА
+   =================================================== */
+.schedule-screen {
+  padding: var(--padding-screen);
+}
+
+.schedule-screen .page-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.schedule-day {
+  background: var(--tg-theme-secondary-bg-color);
+  border-radius: var(--radius-card);
+  padding: 14px;
+  margin-bottom: 8px;
+}
+
+.schedule-day-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.schedule-day-name {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.schedule-day.disabled .schedule-day-name {
+  color: var(--tg-theme-hint-color);
+}
+
+.schedule-toggle {
+  position: relative;
+  width: 44px;
+  height: 26px;
+  cursor: pointer;
+}
+
+.schedule-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.toggle-track {
+  position: absolute;
+  inset: 0;
+  background: var(--tg-theme-hint-color);
+  border-radius: 13px;
+  transition: background 0.2s;
+  opacity: 0.4;
+}
+
+.schedule-toggle input:checked + .toggle-track {
+  background: var(--tg-theme-button-color);
+  opacity: 1;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.schedule-toggle input:checked ~ .toggle-thumb {
+  transform: translateX(18px);
+}
+
+.schedule-hours {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--tg-theme-hint-color);
+}
+
+.schedule-day.disabled .schedule-hours {
+  display: none;
+}
+
+.schedule-time-input {
+  padding: 6px 10px;
+  background: var(--tg-theme-bg-color);
+  border: none;
+  border-radius: var(--radius-badge);
+  font-size: 14px;
+  color: var(--tg-theme-text-color);
+  font-family: inherit;
+  outline: none;
+  width: 78px;
+  text-align: center;
+}
+
+/* ===================================================
+   ЗАПИСИ КЛИЕНТОВ (экран мастера)
+   =================================================== */
+.master-bookings-screen {
+  padding: var(--padding-screen);
+  padding-bottom: 80px;
+}
+
+.master-bookings-screen .page-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.master-booking-card {
+  background: var(--tg-theme-secondary-bg-color);
+  border-radius: var(--radius-card);
+  padding: 14px;
+  margin-bottom: 10px;
+}
+
+.master-booking-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.master-booking-client {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.master-booking-service {
+  font-size: 13px;
+  color: var(--tg-theme-hint-color);
+  margin-top: 2px;
+}
+
+.master-booking-datetime {
+  font-size: 13px;
+  color: var(--tg-theme-hint-color);
+  margin-bottom: 4px;
+}
+
+.master-booking-phone {
+  font-size: 13px;
+  color: var(--tg-theme-link-color);
+  margin-bottom: 12px;
+}
+
+.master-booking-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-confirm-booking {
+  flex: 1;
+  min-height: var(--btn-min-height);
+  background: var(--tg-theme-button-color);
+  color: var(--tg-theme-button-text-color);
+  border: none;
+  border-radius: var(--radius-btn);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ===================================================
+   ПРОФИЛЬ МАСТЕРА (редактирование)
+   =================================================== */
+.master-profile-edit {
+  padding: var(--padding-screen);
+  padding-bottom: 100px;
+}
+
+.master-profile-edit .profile-avatar-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.profile-avatar-big {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #f7b2c4, #e879a0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  cursor: pointer;
+}
+
+.profile-avatar-hint {
+  font-size: 13px;
+  color: var(--tg-theme-link-color);
+  cursor: pointer;
+}
+
+/* ===================================================
+   ПРОСМОТР ФОТО (галерея)
+   =================================================== */
+.photo-screen {
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.photo-viewer {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 120px;
+  position: relative;
+}
+
+.photo-viewer-title {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: rgba(255,255,255,0.8);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ===================================================
+   ОБЩИЕ СТИЛИ ДЛЯ МАСТЕР-ЭКРАНОВ
+   =================================================== */
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+.empty-state-master {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 40px 16px;
+  gap: 10px;
+}
+
