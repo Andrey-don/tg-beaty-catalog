@@ -5,6 +5,14 @@
 
 const OnboardingScreen = {
   render() {
+    const pendingCount = MASTER_BOOKINGS.filter(b => b.status === 'pending').length;
+    const pendingBadge = pendingCount > 0
+      ? `<span class="notif-badge">${pendingCount}</span>`
+      : '';
+    const pendingText = pendingCount > 0
+      ? `${pendingCount} новых заявок — нажмите, чтобы открыть`
+      : 'Приходят сразу при новой записи';
+
     return `
       <div class="screen pb-main-btn">
         <div class="onboarding-screen">
@@ -71,9 +79,9 @@ const OnboardingScreen = {
               <div class="onboarding-arrow">⎘</div>
             </div>
             <div class="onboarding-feature onboarding-feature-link"
-                 onclick="App.showSnackbar('Уведомления о новых записях приходят автоматически в этот чат 🔔')">
-              <div class="onboarding-feature-icon">🔔</div>
-              <div class="onboarding-feature-text"><strong>Уведомления</strong>Приходят сразу при новой записи</div>
+                 onclick="OnboardingScreen.goScreen('master-bookings')">
+              <div class="onboarding-feature-icon" style="position:relative">🔔${pendingBadge}</div>
+              <div class="onboarding-feature-text"><strong>Уведомления</strong>${pendingText}</div>
               <div class="onboarding-arrow">›</div>
             </div>
             <div class="onboarding-feature onboarding-feature-link"

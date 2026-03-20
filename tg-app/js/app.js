@@ -84,6 +84,7 @@ const App = {
       master:   'master-profile-client',
       // Мастер
       dashboard: 'dashboard',
+      clients:   'master-bookings',
       schedule:  'master-schedule',
       services:  'master-services',
     };
@@ -105,14 +106,18 @@ const App = {
     const nav = document.getElementById('bottom-nav');
 
     if (this.mode === 'master') {
+      const pendingCount = MASTER_BOOKINGS.filter(b => b.status === 'pending').length;
+      const badge = pendingCount > 0
+        ? `<span class="nav-badge">${pendingCount}</span>`
+        : '';
       nav.innerHTML = `
         <button class="nav-item active" data-tab="dashboard" onclick="App.goTab('dashboard')">
           <span class="nav-icon">📊</span>
           <span class="nav-label">Главная</span>
         </button>
-        <button class="nav-item" data-tab="schedule" onclick="App.goTab('schedule')">
-          <span class="nav-icon">📅</span>
-          <span class="nav-label">Расписание</span>
+        <button class="nav-item" data-tab="clients" onclick="App.goTab('clients')">
+          <span class="nav-icon" style="position:relative">👥${badge}</span>
+          <span class="nav-label">Клиенты</span>
         </button>
         <button class="nav-item" data-tab="services" onclick="App.goTab('services')">
           <span class="nav-icon">✂️</span>
@@ -150,6 +155,11 @@ const App = {
       <button class="${this.mode === 'master' ? 'active' : ''}" onclick="App.switchMode('master')">Мастер</button>
     `;
     document.getElementById('app').appendChild(toggle);
+  },
+
+  /** Перерисовывает навигацию мастера (обновляет бейдж) */
+  refreshMasterNav() {
+    if (this.mode === 'master') this._renderNav();
   },
 
   switchMode(mode) {

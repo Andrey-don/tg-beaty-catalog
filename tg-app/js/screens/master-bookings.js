@@ -83,6 +83,7 @@ const MasterBookingsScreen = {
     const b = MASTER_BOOKINGS.find(b => b.id === id);
     if (b) b.status = 'confirmed';
     Router.replace('master-bookings', null);
+    App.refreshMasterNav();
     App.showSnackbar('Запись подтверждена ✓');
   },
 
@@ -93,6 +94,7 @@ const MasterBookingsScreen = {
       const b = MASTER_BOOKINGS.find(b => b.id === id);
       if (b) b.status = 'cancelled';
       Router.replace('master-bookings', null);
+      App.refreshMasterNav();
       App.showSnackbar('Запись отменена');
     });
   },

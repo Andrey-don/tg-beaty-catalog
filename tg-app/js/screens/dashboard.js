@@ -149,6 +149,7 @@ const DashboardScreen = {
     const b = MASTER_BOOKINGS.find(b => b.id === id);
     if (b) b.status = 'confirmed';
     Router.replace('dashboard', null);
+    App.refreshMasterNav();
     App.showSnackbar('Запись подтверждена ✓');
   },
 
