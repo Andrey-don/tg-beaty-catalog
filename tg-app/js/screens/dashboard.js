@@ -20,10 +20,6 @@ const DashboardScreen = {
       .slice(0, 4);
 
     // Статистика
-    const monthIncome = MASTER_BOOKINGS
-      .filter(b => b.status === 'confirmed')
-      .reduce((sum, b) => sum + b.price, 0);
-
     const pendingCount = MASTER_BOOKINGS.filter(b => b.status === 'pending').length;
 
     const bookingsHTML = upcoming.length
@@ -59,10 +55,6 @@ const DashboardScreen = {
             <div class="stat-card">
               <div class="stat-card-value">${MASTER_BOOKINGS.length}</div>
               <div class="stat-card-label">Всего записей</div>
-            </div>
-            <div class="stat-card" style="grid-column: span 2">
-              <div class="stat-card-value accent">${formatPrice(monthIncome)}</div>
-              <div class="stat-card-label">Доход (подтверждённые)</div>
             </div>
           </div>
 

@@ -59,29 +59,87 @@ const RecordsScreen = {
   },
 
   _renderCard(booking) {
-    const labels = { confirmed: 'Подтверждено', pending: 'Ожидает', cancelled: 'Отменено' };
+    const b = booking;
+    const labels = {
+      confirmed: 'Подтверждено',
+      pending:   'Ожидает',
+      cancelled: 'Отменено',
+      propose:   'Новое время',
+    };
     const isUpcoming = this.activeTab === 'upcoming';
+
+    if (b.status === 'propose') {
+      const proposedFormatted = b.proposedDate ? formatDateFull(new Date(b.proposedDate)) : '';
+      return `
+        <div class="booking-card">
+          <div class="booking-card-header">
+            <div class="booking-service-name">${b.serviceName}</div>
+            <div class="status-badge propose">${labels['propose']}</div>
+          </div>
+          <div class="booking-card-date">
+            📅 ${formatDateFull(new Date(b.date))} · ${b.time}
+            &nbsp;&nbsp;💳 ${formatPrice(b.price)}
+          </div>
+          <div class="propose-notice">
+            📅 Мастер предлагает другое время:<br>
+            <strong>${proposedFormatted} · ${b.proposedTime || ''}</strong>
+          </div>
+          <div class="booking-actions">
+            <button class="btn-rebook"
+                    onclick="RecordsScreen.acceptProposal('${b.id}')">✓ Принять</button>
+            <button class="btn-cancel-booking"
+                    onclick="RecordsScreen.rejectProposal('${b.id}')">Отклонить</button>
+          </div>
+        </div>
+      `;
+    }
+
+    if (b.status === 'pending') {
+      return `
+        <div class="booking-card">
+          <div class="booking-card-header">
+            <div class="booking-service-name">${b.serviceName}</div>
+            <div class="status-badge pending">${labels['pending']}</div>
+          </div>
+          <div class="booking-card-date">
+            📅 ${formatDateFull(new Date(b.date))} · ${b.time}
+            &nbsp;&nbsp;💳 ${formatPrice(b.price)}
+          </div>
+          <div style="font-size:13px;color:var(--tg-theme-hint-color);margin-bottom:12px">
+            Ожидает мастера
+          </div>
+          ${isUpcoming ? `
+            <div class="booking-actions">
+              <button class="btn-cancel-booking"
+                      onclick="RecordsScreen.cancelBooking('${b.id}')">Отменить</button>
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }
+
+    // confirmed / cancelled
     return `
       <div class="booking-card">
         <div class="booking-card-header">
-          <div class="booking-service-name">${booking.serviceName}</div>
-          <div class="status-badge ${booking.status}">${labels[booking.status]}</div>
+          <div class="booking-service-name">${b.serviceName}</div>
+          <div class="status-badge ${b.status}">${labels[b.status] || b.status}</div>
         </div>
         <div class="booking-card-date">
-          📅 ${formatDateFull(new Date(booking.date))} · ${booking.time}
-          &nbsp;&nbsp;💳 ${formatPrice(booking.price)}
+          📅 ${formatDateFull(new Date(b.date))} · ${b.time}
+          &nbsp;&nbsp;💳 ${formatPrice(b.price)}
         </div>
-        ${isUpcoming ? `
+        ${isUpcoming && b.status === 'confirmed' ? `
           <div class="booking-actions">
             <button class="btn-cancel-booking"
-                    onclick="RecordsScreen.cancelBooking('${booking.id}')">Отменить</button>
+                    onclick="RecordsScreen.cancelBooking('${b.id}')">Отменить</button>
             <button class="btn-rebook"
-                    onclick="RecordsScreen.rebook(${booking.serviceId})">Записаться снова</button>
+                    onclick="RecordsScreen.rebook(${b.serviceId})">Записаться снова</button>
           </div>
         ` : `
           <div class="booking-actions">
             <button class="btn-rebook"
-                    onclick="RecordsScreen.rebook(${booking.serviceId})">Записаться снова</button>
+                    onclick="RecordsScreen.rebook(${b.serviceId})">Записаться снова</button>
           </div>
         `}
       </div>
@@ -104,6 +162,46 @@ const RecordsScreen = {
       document.getElementById('screen-container').innerHTML = this.render();
       this.init();
       App.showSnackbar('Запись отменена');
+    });
+  },
+
+  acceptProposal(bookingId) {
+    TelegramAPI.hapticSuccess();
+    const cb = App.bookings.find(b => b.id === bookingId);
+    if (cb) {
+      cb.status = 'confirmed';
+      cb.date = cb.proposedDate;
+      cb.time = cb.proposedTime;
+      // sync master booking
+      if (cb.masterBookingId) {
+        const mb = MASTER_BOOKINGS.find(b => b.id === cb.masterBookingId);
+        if (mb) {
+          mb.status = 'confirmed';
+          mb.date = cb.proposedDate;
+          mb.time = cb.proposedTime;
+        }
+      }
+    }
+    document.getElementById('screen-container').innerHTML = this.render();
+    this.init();
+    App.showSnackbar('Новое время подтверждено ✓');
+  },
+
+  rejectProposal(bookingId) {
+    TelegramAPI.showConfirm('Отклонить предложение мастера?', confirmed => {
+      if (!confirmed) return;
+      TelegramAPI.hapticError();
+      const cb = App.bookings.find(b => b.id === bookingId);
+      if (cb) {
+        cb.status = 'cancelled';
+        if (cb.masterBookingId) {
+          const mb = MASTER_BOOKINGS.find(b => b.id === cb.masterBookingId);
+          if (mb) mb.status = 'cancelled';
+        }
+      }
+      document.getElementById('screen-container').innerHTML = this.render();
+      this.init();
+      App.showSnackbar('Предложение отклонено');
     });
   },
 

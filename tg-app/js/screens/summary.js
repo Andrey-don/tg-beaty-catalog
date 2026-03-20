@@ -116,28 +116,34 @@ const SummaryScreen = {
 
       const { service, date, time, user, phone } = App.booking;
 
+      // Генерируем связанные ID
+      const bookingId = 'b' + Date.now();
+      const masterBookingId = 'mb' + (Date.now() + 1);
+
       // Добавляем в список записей клиента
       App.bookings.unshift({
-        id:          'b' + Date.now(),
-        serviceId:   service.id,
-        serviceName: service.title,
-        date:        new Date(date),
+        id:             bookingId,
+        serviceId:      service.id,
+        serviceName:    service.title,
+        date:           new Date(date),
         time,
-        status: 'confirmed',
-        price:  service.price,
+        status:         'pending',
+        price:          service.price,
+        masterBookingId: masterBookingId,
       });
 
       // Добавляем в список мастера как «ожидает подтверждения»
       MASTER_BOOKINGS.unshift({
-        id:          'mb' + Date.now(),
-        clientName:  user?.first_name || 'Клиент',
-        serviceId:   service.id,
-        serviceName: service.title,
-        date:        new Date(date),
+        id:             masterBookingId,
+        clientName:     user?.first_name || 'Клиент',
+        serviceId:      service.id,
+        serviceName:    service.title,
+        date:           new Date(date),
         time,
-        status:      'pending',
-        price:       service.price,
-        phone:       phone || 'не указан',
+        status:         'pending',
+        price:          service.price,
+        phone:          phone || 'не указан',
+        clientBookingId: bookingId,
       });
 
       Router.push('success', null);

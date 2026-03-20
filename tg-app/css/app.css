@@ -2050,3 +2050,59 @@ body {
   gap: 10px;
 }
 
+/* ===================================================
+   ПРЕДЛОЖЕНИЕ НОВОГО ВРЕМЕНИ (мастер → клиент)
+   =================================================== */
+
+/* Форма предложения нового времени в карточке мастера */
+.propose-form {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--tg-theme-bg-color);
+}
+
+.propose-form .form-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+/* Блок уведомления о предложении (вид клиента) */
+.propose-notice {
+  background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin: 8px 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #856404;
+}
+
+/* 3-кнопочный лейаут для действий мастера */
+.master-booking-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.btn-propose-booking {
+  flex: 1;
+  min-height: 44px;
+  background: var(--tg-theme-secondary-bg-color);
+  border: 1.5px solid var(--tg-theme-hint-color);
+  border-radius: var(--radius-btn);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--tg-theme-text-color);
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.btn-propose-booking:active { opacity: 0.7; }
+
+/* Бейдж статуса "propose" */
+.status-badge.propose {
+  background: rgba(133, 100, 4, 0.12);
+  color: #856404;
+}
+
